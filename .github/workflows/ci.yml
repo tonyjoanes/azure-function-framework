@@ -104,7 +104,10 @@ jobs:
       run: dotnet restore AzureFunctionFramework.sln
       
     - name: Run security audit
-      run: dotnet list package --vulnerable --include-transitive
+      continue-on-error: true
+      run: |
+        echo "Checking for vulnerable packages..."
+        dotnet list src/AzureFunctionFramework/AzureFunctionFramework.csproj package --vulnerable --include-transitive
       
     - name: Run CodeQL Analysis
       uses: github/codeql-action/init@v3

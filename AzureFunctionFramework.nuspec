@@ -9,8 +9,8 @@
     <description>A lightweight NuGet package to simplify Azure Functions development in .NET. It abstracts away boilerplate for common triggers (HTTP, Service Bus), configuration (App Config + Key Vault), and environment variable setup.</description>
     <summary>Simplify Azure Functions development with reduced boilerplate and configuration management</summary>
     <language>C#</language>
-    <projectUrl>https://github.com/your-org/azure-function-framework</projectUrl>
-    <repository type="git" url="https://github.com/your-org/azure-function-framework" />
+    <projectUrl>https://github.com/tonyjoanes/azure-function-framework</projectUrl>
+    <repository type="git" url="https://github.com/tonyjoanes/azure-function-framework" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright 2025</copyright>

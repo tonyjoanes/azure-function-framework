@@ -9,11 +9,12 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <SelfContained>false</SelfContained>
     <PackageId>AzureFunctionFramework</PackageId>
-    <Version>1.0.0</Version>
+    <AssemblyName>AzureFunctionFramework</AssemblyName>
+    <Version>1.0.1</Version>
     <Authors>Azure Function Framework Team</Authors>
     <Description>A lightweight NuGet package to simplify Azure Functions development in .NET. It abstracts away boilerplate for common triggers (HTTP, Service Bus), configuration (App Config + Key Vault), and environment variable setup.</Description>
-    <PackageProjectUrl>https://github.com/your-org/azure-function-framework</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/your-org/azure-function-framework</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/tonyjoanes/azure-function-framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tonyjoanes/azure-function-framework</RepositoryUrl>
     <PackageTags>azure;functions;dotnet;framework;boilerplate;configuration</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
