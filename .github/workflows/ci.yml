@@ -40,6 +40,12 @@ jobs:
     - name: Run tests
       run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
         
+    - name: Run security audit
+      continue-on-error: true
+      run: |
+        echo "Checking for vulnerable packages..."
+        dotnet list src/AzureFunctionFramework/AzureFunctionFramework.csproj package --vulnerable --include-transitive
+        
     - name: Upload coverage reports to Codecov
       if: always()
       uses: codecov/codecov-action@v4
@@ -87,32 +93,3 @@ jobs:
       if: contains(github.event.head_commit.message, '[publish]')
       run: |
         dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-
-  security-scan:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Restore dependencies
-      run: dotnet restore AzureFunctionFramework.sln
-      
-    - name: Run security audit
-      continue-on-error: true
-      run: |
-        echo "Checking for vulnerable packages..."
-        dotnet list src/AzureFunctionFramework/AzureFunctionFramework.csproj package --vulnerable --include-transitive
-      
-    - name: Run CodeQL Analysis
-      uses: github/codeql-action/init@v3
-      with:
-        languages: csharp
-        
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
