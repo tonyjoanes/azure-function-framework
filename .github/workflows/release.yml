@@ -34,7 +34,7 @@ jobs:
       run: dotnet build AzureFunctionFramework.sln --configuration Release --no-restore
       
     - name: Run tests
-      run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal --logger trx --results-directory ./TestResults
+      run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal
       
     - name: Pack NuGet package
       run: dotnet pack src/AzureFunctionFramework --configuration Release --no-build --output ./nupkgs
