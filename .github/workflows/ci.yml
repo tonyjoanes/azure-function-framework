@@ -38,21 +38,21 @@ jobs:
       run: dotnet build AzureFunctionFramework.sln --configuration Release --no-restore
       
     - name: Run tests
-      run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory ./TestResults
       
     - name: Generate test report
       if: always()
       uses: dorny/test-reporter@v1
       with:
         name: Test Results
-        path: '**/TestResults/*.trx'
+        path: 'TestResults/**/*.trx'
         reporter: dotnet-trx
         
     - name: Upload coverage reports to Codecov
       if: always()
       uses: codecov/codecov-action@v4
       with:
-        directory: ./coverage
+        directory: ./TestResults
         fail_ci_if_error: false
 
   package:
