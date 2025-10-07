@@ -36,6 +36,14 @@ jobs:
     - name: Run tests
       run: dotnet test AzureFunctionFramework.sln --configuration Release --no-build --verbosity normal
       
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/dotnet@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high --file=src/AzureFunctionFramework/AzureFunctionFramework.csproj
+      
     - name: Pack NuGet package
       run: dotnet pack src/AzureFunctionFramework --configuration Release --no-build --output ./nupkgs
       

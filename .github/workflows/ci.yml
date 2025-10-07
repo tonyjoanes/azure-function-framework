@@ -46,6 +46,14 @@ jobs:
         echo "Checking for vulnerable packages..."
         dotnet list src/AzureFunctionFramework/AzureFunctionFramework.csproj package --vulnerable --include-transitive
         
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/dotnet@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high --file=src/AzureFunctionFramework/AzureFunctionFramework.csproj
+        
     - name: Upload coverage reports to Codecov
       if: always()
       uses: codecov/codecov-action@v4

@@ -6,6 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![Azure Functions](https://img.shields.io/badge/Azure%20Functions-v4-orange.svg)](https://docs.microsoft.com/en-us/azure/azure-functions/)
+[![Known Vulnerabilities](https://snyk.io/test/github/tonyjoanes/azure-function-framework/badge.svg)](https://snyk.io/test/github/tonyjoanes/azure-function-framework)
+[![Security Rating](https://snyk.io/test/github/tonyjoanes/azure-function-framework/badge.svg?targetFile=src/AzureFunctionFramework/AzureFunctionFramework.csproj)](https://snyk.io/test/github/tonyjoanes/azure-function-framework?targetFile=src/AzureFunctionFramework/AzureFunctionFramework.csproj)
 
 A lightweight NuGet package to simplify Azure Functions development in .NET. It abstracts away boilerplate for common triggers (HTTP, Service Bus), configuration (App Config + Key Vault), and environment variable setup. Devs inherit from base classes, add their logic, and the framework handles the rest—no more config headaches!
 
