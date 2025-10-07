@@ -1,8 +1,27 @@
 # Azure Function Framework
 
+[![Build Status](https://github.com/tonyjoanes/azure-function-framework/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/tonyjoanes/azure-function-framework/actions)
+[![NuGet Version](https://img.shields.io/nuget/v/AzureFunctionFramework.svg)](https://www.nuget.org/packages/AzureFunctionFramework/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/AzureFunctionFramework.svg)](https://www.nuget.org/packages/AzureFunctionFramework/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![Azure Functions](https://img.shields.io/badge/Azure%20Functions-v4-orange.svg)](https://docs.microsoft.com/en-us/azure/azure-functions/)
+
 A lightweight NuGet package to simplify Azure Functions development in .NET. It abstracts away boilerplate for common triggers (HTTP, Service Bus), configuration (App Config + Key Vault), and environment variable setup. Devs inherit from base classes, add their logic, and the framework handles the rest—no more config headaches!
 
-## Features
+> **🚀 Quick Start**: Install the package and inherit from `HttpFunctionBase` or `ServiceBusFunctionBase<T>` - the framework handles the rest!
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Quick Start (For Consumers)](#-quick-start-for-consumers)
+- [Service Bus Concepts](#-service-bus-concepts)
+- [Building the Package](#-building-the-package)
+- [Architecture Overview](#-architecture-overview)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+## ✨ Features
 - **Plug-and-Play Triggers**: Base classes for HTTP and Service Bus (extensible for Timer, Blob, etc.).
 - **Seamless Config**: Auto-loads from App Config (with labels for dev/staging/prod) and Key Vault for secrets.
 - **Env Var Magic**: Pulls topic/subscription names and routes from config, injects as env vars for binding resolution.
@@ -10,7 +29,7 @@ A lightweight NuGet package to simplify Azure Functions development in .NET. It 
 - **Auto-Discovery**: Reflection scans for your derived classes—no manual registration.
 - **Minimal Boilerplate**: Devs focus on business logic; framework wires DI, logging, and error handling.
 
-## Quick Start (For Consumers)
+## 🚀 Quick Start (For Consumers)
 1. **Create a New Azure Functions Project** (Target .NET 8+ Isolated Worker):
    ```
    dotnet new func -n MyFunctionApp --model Isolated
@@ -123,7 +142,26 @@ A lightweight NuGet package to simplify Azure Functions development in .NET. It 
 
 **📖 Service Bus Concepts**: See [SERVICE_BUS_GUIDE.md](docs/SERVICE_BUS_GUIDE.md) for a complete explanation of topics, subscriptions, and pub/sub patterns.
 
-## Building the Package
+## 🚌 Service Bus Concepts
+
+Understanding Service Bus Topics and Subscriptions:
+
+| Concept | What It Is | Example |
+|---------|------------|---------|
+| **Topic** | A "channel" where messages are published | `"orders"`, `"inventory"`, `"payments"` |
+| **Subscription** | Your function's "tuner" for the topic | `"processing"`, `"billing"`, `"fulfillment"` |
+| **Connection** | References your Service Bus configuration | `"ServiceBus"` (in appsettings.json) |
+
+```csharp
+// Multiple functions can listen to the same topic with different subscriptions
+[ServiceBusTrigger("orders", "billing", "ServiceBus")]      // Billing function
+[ServiceBusTrigger("orders", "fulfillment", "ServiceBus")]  // Fulfillment function  
+[ServiceBusTrigger("orders", "notifications", "ServiceBus")] // Notification function
+```
+
+Each subscription gets its own copy of messages from the topic! 📡
+
+## 🔧 Building the Package
 This repo builds the NuGet package. Follow these steps to develop and publish. Targets .NET 8+ isolated worker with `FunctionsApplication.CreateBuilder`.
 
 ### Prerequisites
@@ -200,19 +238,19 @@ azure-function-framework/
 - **Enhance**: Prompt: "Add a TimerFunctionBase with cron from config, using latest isolated worker APIs."
 - **Docs**: Use Cursor to generate XML comments: "Add full XML docs to HttpFunctionBase methods."
 
-## Architecture Overview
+## 🏗️ Architecture Overview
 - **Entry Point**: `AddFunctionFramework` extension configures the `IHostApplicationBuilder` (from `FunctionsApplication.CreateBuilder`), loads config, sets env vars, discovers/registers triggers.
 - **Triggers**: Base classes with attributes for customization; runtime invokes via Functions host.
 - **Config Flow**: App Config (labeled) → Key Vault secrets → Env vars → Binding resolution.
 - **Extensibility**: Add new bases in `BaseClasses/` and update `GetTriggerTypes()` reflection.
 
-## Contributing
+## 🤝 Contributing
 1. Fork the repo.
 2. Create a feature branch (`git checkout -b feature/new-trigger`).
 3. Use Cursor to implement (e.g., "Implement Blob trigger base for .NET 8").
 4. Add tests, build, and PR.
 
-## License
+## 📄 License
 MIT - see [LICENSE](LICENSE) file.
 
 ---

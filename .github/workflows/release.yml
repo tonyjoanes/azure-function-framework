@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Extract version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
+      
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity normal
+      
+    - name: Pack NuGet package
+      run: dotnet pack src/AzureFunctionFramework --configuration Release --no-build --output ./nupkgs
+      
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        body: |
+          ## What's New in v${{ steps.get_version.outputs.VERSION }}
+          
+          ### Features
+          - Enhanced Service Bus documentation with clear explanations
+          - Improved multiple Service Bus function support
+          - Better configuration management
+          
+          ### Improvements
+          - Enhanced XML documentation
+          - Better error handling
+          - Improved test coverage
+          
+          ### Documentation
+          - Added comprehensive Service Bus guide
+          - Enhanced README with examples
+          - Better inline code documentation
+          
+          ## Installation
+          
+          ```bash
+          dotnet add package AzureFunctionFramework
+          ```
+          
+          ## Usage
+          
+          See [README.md](README.md) for quick start guide and [docs/SERVICE_BUS_GUIDE.md](docs/SERVICE_BUS_GUIDE.md) for detailed Service Bus concepts.
+          
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./nupkgs/AzureFunctionFramework.${{ steps.get_version.outputs.VERSION }}.nupkg
+        asset_name: AzureFunctionFramework.${{ steps.get_version.outputs.VERSION }}.nupkg
+        asset_content_type: application/octet-stream
+
+  publish-nuget:
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Extract version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Pack NuGet package
+      run: dotnet pack src/AzureFunctionFramework --configuration Release --no-build --output ./nupkgs
+      
+    - name: Publish to NuGet
+      run: |
+        dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
